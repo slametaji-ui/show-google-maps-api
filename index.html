@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta</title>
+    <script>
+		window.dataLayer = window.dataLayer || [];
+
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-177378419-1');
+	</script>
+</head>
+<body>
+    <div class="row">
+		<div id="map" style="width:100%;height:650px;"></div>
+    </div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=YourApi"></script>
+<script>
+		function initialize() {
+
+			var locations = [
+				<?php foreach($result as $data):?>
+				['<div style="text-align:center"><img style="height:50px;width:50px;border-radius:100%" src="<?php echo $data->foto;?>"><br><br><b><?= $data->name;?></b><br><?= $data->des;?><br><br><small class="label bg-green">Update : <b><?= format_indo($data->update);?></b></small></div>', <?= $pns->kordinat;?>],
+				<?php endforeach;?>
+			];
+
+			var propertiPeta = {
+				center: new google.maps.LatLng(-6.5517365, 107.3877968),
+				zoom: 11,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+
+			var map = new google.maps.Map(document.getElementById("map"), propertiPeta);
+			var infowindow = new google.maps.InfoWindow();
+			var marker, i;
+
+			for (i = 0; i < locations.length; i++) {
+				marker = new google.maps.Marker({
+					position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+					map: map
+				});
+
+				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					return function() {
+						infowindow.setContent(locations[i][0]);
+						infowindow.open(map, marker);
+					}
+				})(marker, i));
+			}
+		}
+
+		google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+
+</body>
+</html>
